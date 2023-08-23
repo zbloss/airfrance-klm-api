@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "airfrance-klm-api"
+version = "0.1.0"
+description = "This Python package provides a simple and easy-to-use interface for interacting with Air France's Developer API."
+authors = ["Zach Bloss <zacharybloss@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "airfrance_klm_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
