@@ -1,19 +1,7 @@
-from enum import Enum
-
 from pydantic import BaseModel
 from pydantic.functional_validators import field_validator
-
+from airfrance_klm_api.models.enums import OriginsEnum
 from airfrance_klm_api.utils import remove_spaces, to_upper
-
-
-class OriginsEnum(str, Enum):
-    stopover: str = "STOPOVER"
-    city: str = "CITY"
-    airport: str = "AIRPORT"
-    bus_station: str = "BUS_STATION"
-    heliport: str = "HELIPORT"
-    railway_station: str = "RAILWAY_STATION"
-    ferry_station: str = "FERRY_STATION"
 
 
 class Origins(BaseModel):

@@ -1,15 +1,8 @@
-from enum import Enum
-
 from pydantic import BaseModel
 from pydantic.functional_validators import field_validator
 
 from airfrance_klm_api.utils import remove_spaces, to_upper
-
-
-class TimePeriodsEnum(str, Enum):
-    day: str = "DAY"
-    month: str = "MONTH"
-    overall: str = "OVERALL"
+from airfrance_klm_api.models.enums import TimePeriodsEnum
 
 
 class TimePeriods(BaseModel):
