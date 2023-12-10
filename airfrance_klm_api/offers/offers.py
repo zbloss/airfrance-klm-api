@@ -5,29 +5,7 @@ from airfrance_klm_api.models import BookingFlows, Origins, TimePeriods
 
 
 class Offers(AirfranceKLM):
-    """
-    Class to interact with the Airfrance KLM Developer
-    Offers API.
-
-    Args:
-        api_key : str
-            Airfrance KLM API Key created in their developer
-            portal.
-        api_secret : str
-            Airfrance KLM API Secret created in their
-            developer portal.
-        api_version : str
-            API version to use.
-
-    Returns:
-        Offers : AirfranceKLM
-    """
-
-    def __init__(self, api_key: str, api_secret: str, api_version: str = "v3"):
-        super().__init__(api_key, api_secret)
-
-        self.api_version: str = api_version
-        self.endpoint_prefix: str = f"travel/offers/{self.api_version}"
+    endpoint_prefix: str = f"travel/offers/v3"
 
     def lowest_fares_by_destination(
         self,

@@ -6,8 +6,11 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import JSONDecodeError
 from requests.packages.urllib3.util.retry import Retry
 
+from pydantic import BaseModel
+from airfrance_klm_api.models.config import Config
 
-class AirfranceKLM:
+
+class AirfranceKLM(BaseModel):
     """
     Base class to be inherited by the various subclasses
     in this package. This class provides the basic
@@ -15,34 +18,16 @@ class AirfranceKLM:
     API.
 
     Args:
-        api_key : str
-            Airfrance KLM API Key created in their developer
-            portal.
-        api_secret : str
-            Airfrance KLM API Secret created in their
-            developer portal.
-        base_url : str
-            Base URL to prepend to endpoints pass in
+        config : Config
+            Config object containing the API Key, API Secret,
+            and Base URL to prepend to endpoints passed in
             `self._make_request`.
 
     Returns:
         AirfranceKLM : AirfranceKLM
     """
 
-    def __init__(
-        self,
-        api_key: str,
-        api_secret: str,
-        base_url: str = "https://live.airfranceklm.com",
-    ):
-        self.api_key: str = api_key
-        self.api_secret: str = api_secret
-        self.headers: dict = {
-            "API-Key": self.api_key,
-            "Content-Type": "application/json",
-        }
-
-        self.base_url = base_url
+    config: Config
 
     def _make_request(
         self,
@@ -116,9 +101,9 @@ class AirfranceKLM:
         http_session.mount("https://", HTTPAdapter(max_retries=retries))
 
         endpoint = endpoint if not endpoint.startswith("/") else endpoint[1:]
-        url = f"{self.base_url}/{endpoint}"
+        url = f"{self.config.BASE_URL}/{endpoint}"
 
-        args = {"url": url, "headers": self.headers}
+        args = {"url": url, "headers": self.config.headers}
         if data is not None:
             args["data"] = data
 
