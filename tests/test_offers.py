@@ -1,4 +1,3 @@
-import os
 from datetime import datetime, timedelta
 
 import pytest
@@ -6,24 +5,28 @@ from dotenv import load_dotenv
 
 from airfrance_klm_api.offers import Offers
 from airfrance_klm_api.utils import format_datetime
+from airfrance_klm_api.models.config import Config
 
 load_dotenv()
 
 
 class TestOffers:
-    AF_KLM_API_KEY = os.getenv("AF_KLM_API_KEY")
-    AF_KLM_API_SECRET = os.getenv("AF_KLM_API_SECRET")
 
-    offers = Offers(AF_KLM_API_KEY, AF_KLM_API_SECRET)
+    api_key: str = "hey"
+    api_secret: str = "there"
+    base_url: str = "https://live.airfranceklm.com"
+    default_config: Config = Config(API_KEY=api_key, API_SECRET=api_secret)
+    offers = Offers(config=default_config)
 
     def test___init__(self):
-        assert isinstance(self.offers.api_key, str)
-        assert isinstance(self.offers.api_secret, str)
-        assert isinstance(self.offers.headers, dict)
+        assert isinstance(self.offers.config.API_KEY, str)
+        assert isinstance(self.offers.config.API_SECRET, str)
+        assert isinstance(self.offers.config.headers, dict)
 
-        assert self.offers.headers["API-Key"] == self.AF_KLM_API_KEY
-        assert self.offers.headers["Content-Type"] == "application/json"
+        assert self.offers.config.headers["API-Key"] == self.api_key
+        assert self.offers.config.headers["Content-Type"] == "application/json"
 
+    @pytest.mark.integration_test
     def test_lowest_fares_by_destination(self):
         origin_code: str = "DTW"
         destination_cities: list = ["ORD", "ROM"]
