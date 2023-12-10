@@ -1,6 +1,8 @@
 format:
-	isort .
-	black .
+	ruff format .
 
-test:
-	pytest .
+unit-test:
+	pytest tests/ -m 'not integration_test'
+
+integration-test:
+	pytest tests/ -m 'integration_test'
