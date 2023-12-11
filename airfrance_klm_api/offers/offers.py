@@ -60,10 +60,6 @@ class Offers(AirfranceKLM):
 
         assert isinstance(destination_cities, list)
 
-        # origin_type = Origins(origin_type).origin
-        # booking_flow = BookingFlows(booking_flow=booking_flow).booking_flow
-        # time_period = TimePeriods(time_period=time_period).time_period
-
         payload: dict = {
             "bookingFlow": booking_flow,
             "origin": {"type": origin_type, "code": origin_code},
