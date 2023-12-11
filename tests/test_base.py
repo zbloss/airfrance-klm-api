@@ -1,5 +1,5 @@
 import pytest
-from requests.exceptions import ConnectionError
+from requests.exceptions import HTTPError
 from airfrance_klm_api.base import AirfranceKLM
 from airfrance_klm_api.models.config import Config
 
@@ -21,7 +21,7 @@ class TestBase:
 
     @pytest.mark.integration_test
     def test__make_request_invalid(self):
-        with pytest.raises(ConnectionError):
+        with pytest.raises(HTTPError):
             self.airfranceklm._make_request(
                 endpoint="/mega-invalid-endpoint-fa-sho",
                 post_call=False,

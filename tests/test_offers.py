@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 from airfrance_klm_api.offers import Offers
 from airfrance_klm_api.utils import format_datetime
 from airfrance_klm_api.models.config import Config
-from requests.exceptions import ConnectionError
-
+from requests.exceptions import ConnectionError, HTTPError
+from airfrance_klm_api.models.datetime import DateTime
 
 load_dotenv()
 
@@ -41,7 +41,7 @@ class TestOffers:
         booking_flow: str = "LEISURE"
         time_period: str = "DAY"
 
-        with pytest.raises(ConnectionError):
+        with pytest.raises(HTTPError):
             self.offers.lowest_fares_by_destination(
                 origin_code,
                 destination_cities,
@@ -53,3 +53,38 @@ class TestOffers:
                 max_retries=1,
                 backoff_factor=1,
             )
+
+    @pytest.mark.integration_test
+    def test_lowest_fares_by_destination(self):
+        from airfrance_klm_api.environment import API_KEY, API_SECRET
+        config = Config(
+            API_KEY=API_KEY, 
+            API_SECRET=API_SECRET,
+        )
+
+        offers = Offers(config=config, endpoint_prefix='travel/offers')
+        origin_code: str = "DTW"
+        destination_cities: list = ["ORD", "ROM"]
+        from_date: datetime = datetime.now()
+        until_date: datetime = timedelta(days=7) + from_date
+
+        from_date: DateTime = DateTime(datetime=format_datetime(from_date))
+        until_date: DateTime = DateTime(datetime=format_datetime(until_date))
+
+        origin_type: str = "AIRPORT"
+        booking_flow: str = "LEISURE"
+        time_period: str = "day"
+
+        fares = offers.lowest_fares_by_destination(
+            origin_code,
+            destination_cities,
+            from_date,
+            until_date,
+            origin_type,
+            booking_flow,
+            time_period,
+            max_retries=1,
+        )
+        assert isinstance(fares, list)
+        for fare in fares:
+            assert isinstance(fare, dict)
