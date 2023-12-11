@@ -2,6 +2,7 @@ from typing import List
 
 from airfrance_klm_api.base import AirfranceKLM
 from airfrance_klm_api.models.enums import BookingFlows, Origins, TimePeriods
+from airfrance_klm_api.models.datetime import DateTime
 
 
 class Offers(AirfranceKLM):
@@ -11,8 +12,8 @@ class Offers(AirfranceKLM):
         self,
         origin_code: str,
         destination_cities: List[str],
-        from_date: str,
-        until_date: str,
+        from_date: DateTime,
+        until_date: DateTime,
         origin_type: Origins = "AIRPORT",
         booking_flow: BookingFlows = "LEISURE",
         time_period: TimePeriods = "DAY",
@@ -28,9 +29,9 @@ class Offers(AirfranceKLM):
                 String code you are leaving from.
             destination_cities : List[str]
                 List of destination codes as string values.
-            from_date : str
+            from_date : DateTime
                 Start of your trip in datetime format %Y-%m-%dT%H:%M:%SZ.
-            until_date : str
+            until_date : DateTime
                 End of your trip in datetime format %Y-%m-%dT%H:%M:%SZ.
             origin_type : Origins
                 String representing what kind of location you are leaving from.
@@ -47,16 +48,10 @@ class Offers(AirfranceKLM):
                 List of fare dictionary objects.
 
         Raises:
-            AssertionError : If from_date passed is an invalid format.
-            AssertionError : If until_date passed is an invalid format.
+            pydantic.ValidationError : If from_date passed is an invalid format.
+            pydantic.ValidationError : If until_date passed is an invalid format.
             AssertionError : If destination_cities is not a list.
         """
-
-        assert len(from_date.split(":")) == len(from_date.split("-")) == 3
-        assert len(from_date.split("T")) == 2
-
-        assert len(until_date.split(":")) == len(until_date.split("-")) == 3
-        assert len(until_date.split("T")) == 2
 
         assert isinstance(destination_cities, list)
 
