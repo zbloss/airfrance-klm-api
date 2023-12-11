@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class Config(BaseModel):
     API_KEY: str
     API_SECRET: str
-    BASE_URL: str = "https://live.airfranceklm.com"
+    BASE_URL: str = "https://api.airfranceklm.com"
     ADDITIONAL_HEADERS: dict = {}
 
     @cached_property
