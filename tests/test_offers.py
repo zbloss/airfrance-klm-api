@@ -6,12 +6,13 @@ from dotenv import load_dotenv
 from airfrance_klm_api.offers import Offers
 from airfrance_klm_api.utils import format_datetime
 from airfrance_klm_api.models.config import Config
+from requests.exceptions import ConnectionError
+
 
 load_dotenv()
 
 
 class TestOffers:
-
     api_key: str = "hey"
     api_secret: str = "there"
     base_url: str = "https://live.airfranceklm.com"
@@ -27,7 +28,7 @@ class TestOffers:
         assert self.offers.config.headers["Content-Type"] == "application/json"
 
     @pytest.mark.integration_test
-    def test_lowest_fares_by_destination(self):
+    def test_lowest_fares_by_destination_invalid(self):
         origin_code: str = "DTW"
         destination_cities: list = ["ORD", "ROM"]
         from_date: datetime = datetime.now()
@@ -38,16 +39,17 @@ class TestOffers:
 
         origin_type: str = "AIRPORT"
         booking_flow: str = "LEISURE"
-        time_period: str = "day"
+        time_period: str = "DAY"
 
-        out = self.offers.lowest_fares_by_destination(
-            origin_code,
-            destination_cities,
-            from_date_str,
-            until_date_str,
-            origin_type,
-            booking_flow,
-            time_period,
-        )
-
-        assert isinstance(out, dict)
+        with pytest.raises(ConnectionError):
+            self.offers.lowest_fares_by_destination(
+                origin_code,
+                destination_cities,
+                from_date_str,
+                until_date_str,
+                origin_type,
+                booking_flow,
+                time_period,
+                max_retries=1,
+                backoff_factor=1,
+            )

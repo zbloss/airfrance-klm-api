@@ -1,7 +1,7 @@
 from typing import List
 
 from airfrance_klm_api.base import AirfranceKLM
-from airfrance_klm_api.models import BookingFlows, Origins, TimePeriods
+from airfrance_klm_api.models.enums import BookingFlows, Origins, TimePeriods
 
 
 class Offers(AirfranceKLM):
@@ -13,9 +13,10 @@ class Offers(AirfranceKLM):
         destination_cities: List[str],
         from_date: str,
         until_date: str,
-        origin_type: str = "AIRPORT",
-        booking_flow: str = "LEISURE",
-        time_period: str = "DAY",
+        origin_type: Origins = "AIRPORT",
+        booking_flow: BookingFlows = "LEISURE",
+        time_period: TimePeriods = "DAY",
+        **kwargs,
     ):
         """
         Provides the lowest fares by destinations on the next 12 months for a given origin.
@@ -31,13 +32,13 @@ class Offers(AirfranceKLM):
                 Start of your trip in datetime format %Y-%m-%dT%H:%M:%SZ.
             until_date : str
                 End of your trip in datetime format %Y-%m-%dT%H:%M:%SZ.
-            origin_type : str
+            origin_type : Origins
                 String representing what kind of location you are leaving from.
                 [Optional] default: AIRPORT.
-            booking_flow : str
+            booking_flow : BookingFlows
                 Represents a type of booking flow, i.e. the specific context in which the customer is booking a flight (eg: for leisure, as a corporate, as a staff etc.).
                 [Optional] default: LEISURE.
-            time_period : str
+            time_period : TimePeriods
                 The different periods of time that can be considered when requesting lowest fares.
                 [Optional] default: DAY.
 
@@ -59,9 +60,9 @@ class Offers(AirfranceKLM):
 
         assert isinstance(destination_cities, list)
 
-        origin_type = Origins(origin=origin_type).origin
-        booking_flow = BookingFlows(booking_flow=booking_flow).booking_flow
-        time_period = TimePeriods(time_period=time_period).time_period
+        # origin_type = Origins(origin_type).origin
+        # booking_flow = BookingFlows(booking_flow=booking_flow).booking_flow
+        # time_period = TimePeriods(time_period=time_period).time_period
 
         payload: dict = {
             "bookingFlow": booking_flow,
@@ -73,7 +74,7 @@ class Offers(AirfranceKLM):
         }
 
         endpoint = f"/{self.endpoint_prefix}/lowest-fares-by-destination"
-        response = self._make_request(endpoint, data=payload, post_call=True)
+        response = self._make_request(endpoint, data=payload, post_call=True, **kwargs)
 
         return response
 

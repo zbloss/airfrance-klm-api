@@ -1,12 +1,12 @@
 import logging
-from airfrance_klm_api.models.enums import LogLevelEnum
+from airfrance_klm_api.models.enums import LogLevel
 from pydantic import BaseModel
 from functools import cached_property
 
 
 class Logger(BaseModel):
     module: str
-    log_level: LogLevelEnum = "INFO"
+    log_level: LogLevel = "INFO"
     logging_format: str = "%(asctime)s - %(levelname)s - %(name)s: %(message)s"
 
     @cached_property

@@ -3,11 +3,12 @@ from typing import Optional
 
 import requests
 from requests.adapters import HTTPAdapter
-from requests.exceptions import JSONDecodeError
+from requests.exceptions import JSONDecodeError, ConnectionError
 from requests.packages.urllib3.util.retry import Retry
 
 from pydantic import BaseModel
 from airfrance_klm_api.models.config import Config
+from airfrance_klm_api.logger import Logger
 
 
 class AirfranceKLM(BaseModel):
@@ -28,6 +29,9 @@ class AirfranceKLM(BaseModel):
     """
 
     config: Config
+    logger: Logger = Logger(
+        module="airfrance_klm_api.base", log_level="DEBUG"
+    ).get_logger()
 
     def _make_request(
         self,
@@ -36,7 +40,7 @@ class AirfranceKLM(BaseModel):
         post_call: bool = True,
         max_retries: int = 5,
         backoff_factor: int = 3,
-        retry_on_status_codes: list = [400, 404, 423, 429, 500, 502, 503, 504],
+        retry_on_status_codes: list = [500, 502, 503, 504],
     ):
         """
         Helper method to generate requests using the
@@ -79,6 +83,9 @@ class AirfranceKLM(BaseModel):
                              :href: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
             HTTPError : If there is still an non-successful HTTP Status Code after
                         the number of retries has exceeded.
+
+            ConnectionError : If the API call fails due to connect to a valid
+                                URL or endpoint.
 
         """
 

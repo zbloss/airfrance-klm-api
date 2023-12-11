@@ -26,4 +26,8 @@ class TestEnvironment:
 
     def test_invalid_log_level(self):
         with pytest.raises(ValidationError):
-            Environment(API_KEY=self.TEST_API_KEY, API_SECRET=self.TEST_API_SECRET, LOG_LEVEL=123)
+            Environment(
+                API_KEY=self.TEST_API_KEY,
+                API_SECRET=self.TEST_API_SECRET,
+                LOG_LEVEL=123,
+            )

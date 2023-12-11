@@ -1,13 +1,13 @@
 from enum import StrEnum
 
 
-class TimePeriodsEnum(StrEnum):
+class TimePeriods(StrEnum):
     day: str = "DAY"
     month: str = "MONTH"
     overall: str = "OVERALL"
 
 
-class OriginsEnum(StrEnum):
+class Origins(StrEnum):
     stopover: str = "STOPOVER"
     city: str = "CITY"
     airport: str = "AIRPORT"
@@ -17,14 +17,14 @@ class OriginsEnum(StrEnum):
     ferry_station: str = "FERRY_STATION"
 
 
-class BookingFlowsEnum(StrEnum):
+class BookingFlows(StrEnum):
     reward: str = "REWARD"
     corporate: str = "CORPORATE"
     leisure: str = "LEISURE"
     staff: str = "STAFF"
 
 
-class LogLevelEnum(StrEnum):
+class LogLevel(StrEnum):
     debug: str = "DEBUG"
     info: str = "INFO"
     warning: str = "WARNING"
