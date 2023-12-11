@@ -65,31 +65,28 @@ class Offers(AirfranceKLM):
         }
 
         endpoint = f"/{self.endpoint_prefix}/lowest-fares-by-destination"
-        response = self._make_request(endpoint, data=payload, post_call=True, **kwargs)
+        fares = self._make_request(endpoint, data=payload, post_call=True, **kwargs)
 
-        return response
+        return fares
 
 
 if __name__ == "__main__":
-    import os
     from datetime import datetime, timedelta
-
-    from dotenv import load_dotenv
-
     from airfrance_klm_api.utils import format_datetime
+    from airfrance_klm_api.environment import API_KEY, API_SECRET
+    from airfrance_klm_api.models.config import Config
+    from airfrance_klm_api.models.datetime import DateTime
 
-    load_dotenv()
-    AF_KLM_API_KEY = os.getenv("AF_KLM_API_KEY")
-    AF_KLM_API_SECRET = os.getenv("AF_KLM_API_SECRET")
+    config = Config(API_KEY=API_KEY, API_SECRET=API_SECRET)
+    offers = Offers(config)
 
-    offers = Offers(AF_KLM_API_KEY, AF_KLM_API_SECRET, "v3")
     origin_code: str = "DTW"
     destination_cities: list = ["ORD", "ROM"]
     from_date: datetime = datetime.now()
     until_date: datetime = timedelta(days=7) + from_date
 
-    from_date_str: str = format_datetime(from_date)
-    until_date_str: str = format_datetime(until_date)
+    from_date: DateTime = DateTime(datetime=format_datetime(from_date))
+    until_date: DateTime = DateTime(datetime=format_datetime(until_date))
 
     origin_type: str = "AIRPORT"
     booking_flow: str = "LEISURE"
@@ -98,8 +95,8 @@ if __name__ == "__main__":
     out = offers.lowest_fares_by_destination(
         origin_code,
         destination_cities,
-        from_date_str,
-        until_date_str,
+        from_date,
+        until_date,
         origin_type,
         booking_flow,
         time_period,
