@@ -13,13 +13,14 @@ class TestConfig:
         assert isinstance(self.default_config.API_KEY, str)
         assert isinstance(self.default_config.API_SECRET, str)
         assert isinstance(self.default_config.BASE_URL, str)
+        assert isinstance(self.default_config.CONTENT_TYPE, str)
         assert isinstance(self.default_config.ADDITIONAL_HEADERS, dict)
 
     def test_headers(self):
         assert isinstance(self.default_config.headers, dict)
         assert self.default_config.headers["API-Key"] == self.api_key
-        assert self.default_config.headers["Content-Type"] == "application/json"
-        assert len(self.default_config.headers.keys()) == 2
+        assert self.default_config.headers["Content-Type"] == self.default_config.CONTENT_TYPE
+        assert len(self.default_config.headers.keys()) == 6
 
     def test_invalid_api_key(self):
         with pytest.raises(ValidationError):
@@ -36,9 +37,9 @@ class TestConfig:
 
         assert isinstance(config.headers, dict)
         assert config.headers["API-Key"] == self.api_key
-        assert config.headers["Content-Type"] == "application/json"
+        assert config.headers["Content-Type"] == self.default_config.CONTENT_TYPE
         assert config.headers["X-Test"] == "test"
-        assert len(config.headers.keys()) == 3
+        assert len(config.headers.keys()) == 7
 
     def test_invalid_additional_headers(self):
         with pytest.raises(ValidationError):

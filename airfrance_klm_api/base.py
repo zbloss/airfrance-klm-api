@@ -1,4 +1,5 @@
 import os
+import time
 from typing import Optional
 
 import requests
@@ -111,8 +112,10 @@ class AirfranceKLM(BaseModel):
         url = f"{self.config.BASE_URL}/{endpoint}"
 
         args = {"url": url, "headers": self.config.headers}
-        if data is not None:
-            args["data"] = data
+        if isinstance(data, dict):
+            args["json"] = data
+
+        print(f'args: {args}')
 
         if post_call:
             response = http_session.post(**args)
@@ -124,5 +127,7 @@ class AirfranceKLM(BaseModel):
             response = response.json()
         except JSONDecodeError as e:
             response = {"content": response.content}
+
+        time.sleep(2)
 
         return response

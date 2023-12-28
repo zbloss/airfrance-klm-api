@@ -17,7 +17,7 @@ class TestBase:
         assert isinstance(self.airfranceklm.config.headers, dict)
 
         assert self.airfranceklm.config.headers["API-Key"] == self.api_key
-        assert self.airfranceklm.config.headers["Content-Type"] == "application/json"
+        assert self.airfranceklm.config.headers["Content-Type"] == self.default_config.CONTENT_TYPE
 
     @pytest.mark.integration_test
     def test__make_request_invalid(self):

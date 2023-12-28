@@ -1,12 +1,33 @@
 from typing import List
 
+import time
 from airfrance_klm_api.base import AirfranceKLM
 from airfrance_klm_api.models.enums import BookingFlows, Origins, TimePeriods
 from airfrance_klm_api.models.datetime import DateTime
 
 
 class Offers(AirfranceKLM):
-    endpoint_prefix: str = f"travel/offers/v3"
+    def reference_data_deals(
+        self, endpoint: str = "opendata/offers/v3/reference-data/deals", **kwargs
+    ) -> dict:
+        """
+        Provides a list of `best deals` as advertised by Air France and KLM.
+
+        Args:
+            endpoint : str
+                Endpoint to call. [Optional]
+                                  default: reference-data/deals.
+
+        Returns:
+            deals : dict
+                Dictionary of deals organized by origin.
+
+        :href: https://developer.airfranceklm.com/products/api/offers/api-reference#tag/reference-data-deals
+        """
+
+        endpoint = f"/{endpoint}"
+        deals = self._make_request(endpoint, post_call=False, **kwargs)
+        return deals
 
     def lowest_fares_by_destination(
         self,
@@ -18,7 +39,7 @@ class Offers(AirfranceKLM):
         booking_flow: BookingFlows = "LEISURE",
         time_period: TimePeriods = "DAY",
         **kwargs,
-    ):
+    ) -> dict:
         """
         Provides the lowest fares by destinations on the next 12 months for a given origin.
 
@@ -44,8 +65,9 @@ class Offers(AirfranceKLM):
                 [Optional] default: DAY.
 
         Returns:
-            fares : list
-                List of fare dictionary objects.
+            fares : dict
+                Fare dictionary objects with the keys `origin`, `destinationCities` 
+                and `disclaimer`. Fares are stored under the `destinationCities` key.
 
         Raises:
             pydantic.ValidationError : If from_date passed is an invalid format.
@@ -64,57 +86,6 @@ class Offers(AirfranceKLM):
             "untilDate": until_date,
         }
 
-        endpoint = f"/{self.endpoint_prefix}/lowest-fares-by-destination"
+        endpoint = f"/opendata/offers/v3/lowest-fares-by-destination"
         fares = self._make_request(endpoint, data=payload, post_call=True, **kwargs)
-
         return fares
-
-
-if __name__ == "__main__":
-    from datetime import datetime, timedelta
-    from airfrance_klm_api.utils import format_datetime
-    from airfrance_klm_api.environment import API_KEY, API_SECRET
-    from airfrance_klm_api.models.config import Config
-    from airfrance_klm_api.models.datetime import DateTime
-
-    config = Config(API_KEY=API_KEY, API_SECRET=API_SECRET)
-    offers = Offers(config)
-
-    origin_code: str = "DTW"
-    destination_cities: list = ["ORD", "ROM"]
-    from_date: datetime = datetime.now()
-    until_date: datetime = timedelta(days=7) + from_date
-
-    from_date: DateTime = DateTime(datetime=format_datetime(from_date))
-    until_date: DateTime = DateTime(datetime=format_datetime(until_date))
-
-    origin_type: str = "AIRPORT"
-    booking_flow: str = "LEISURE"
-    time_period: str = "day"
-
-    out = offers.lowest_fares_by_destination(
-        origin_code,
-        destination_cities,
-        from_date,
-        until_date,
-        origin_type,
-        booking_flow,
-        time_period,
-    )
-
-
-# {
-#     "bookingFlow": "LEISURE",
-#     "origin": {
-#         "type": "STOPOVER",
-#         "code": "CDG"
-#     },
-#     "destinationCities": [
-#         "AMS",
-#         "PAR",
-#         "LON"
-#     ],
-#     "type": "DAY",
-#     "fromDate": "2019-08-24T14:15:22Z",
-#     "untilDate": "2019-08-24T14:15:22Z"
-# }
