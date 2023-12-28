@@ -30,3 +30,7 @@ class LogLevel(StrEnum):
     warning: str = "WARNING"
     error: str = "ERROR"
     critical: str = "CRITICAL"
+
+class Host(StrEnum):
+    airfrance: str = "AF"
+    klm: str = "KL"

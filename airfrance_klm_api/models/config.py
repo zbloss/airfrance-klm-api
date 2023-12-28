@@ -1,5 +1,6 @@
 from functools import cached_property
 from pydantic import BaseModel
+from airfrance_klm_api.models.enums import Host
 
 
 class Config(BaseModel):
@@ -7,6 +8,7 @@ class Config(BaseModel):
     API_SECRET: str
     BASE_URL: str = "https://api.airfranceklm.com"
     CONTENT_TYPE: str = "application/x-www-form-urlencoded"
+    HOST: Host = "KL"
     ADDITIONAL_HEADERS: dict = {}
 
     @cached_property
@@ -14,7 +16,7 @@ class Config(BaseModel):
         return {
             "API-Key": self.API_KEY,
             "Content-Type": self.CONTENT_TYPE,
-            "AFKL-TRAVEL-Host": "KL",
+            "AFKL-TRAVEL-Host": self.HOST,
             "Accept": "*/*",
             "Connection": "keep-alive",
             "Accept-Encoding": "gzip, deflate, br",

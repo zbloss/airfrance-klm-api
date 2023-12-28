@@ -14,6 +14,7 @@ class TestConfig:
         assert isinstance(self.default_config.API_SECRET, str)
         assert isinstance(self.default_config.BASE_URL, str)
         assert isinstance(self.default_config.CONTENT_TYPE, str)
+        assert isinstance(self.default_config.HOST, str)
         assert isinstance(self.default_config.ADDITIONAL_HEADERS, dict)
 
     def test_headers(self):
