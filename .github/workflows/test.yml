@@ -27,16 +27,12 @@ jobs:
           poetry config virtualenvs.create false
           poetry install --with dev,test
 
-      - name: Run Unit Tests
-        run: pytest tests -m 'not integration_test'
-        env:
-          AF_KLM_API_KEY: "Hey"
-          AF_KLM_API_SECRET: "There"
-          LOG_LEVEL: INFO
-
-      - name: Run Integration Tests
-        run: pytest tests -m 'integration_test'
+      - name: Run Tests
+        run: coverage run -m pytest tests
         env:
           AF_KLM_API_KEY: ${{ secrets.AF_KLM_API_KEY }}
           AF_KLM_API_SECRET: ${{ secrets.AF_KLM_API_SECRET }}
           LOG_LEVEL: INFO
+
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v2
