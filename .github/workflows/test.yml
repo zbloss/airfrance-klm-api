@@ -22,7 +22,10 @@ jobs:
           python-version: 3.11.4
 
       - name: Install dependencies
-        run: pip install poetry==1.7.1 && poetry install --with dev,test
+        run: |
+          pip install poetry==1.7.1
+          poetry config virtualenvs.create false
+          poetry install --with dev,test
 
       - name: Run Unit Tests
         run: pytest tests -m 'not integration_test'
