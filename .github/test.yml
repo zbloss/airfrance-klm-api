@@ -26,3 +26,10 @@ jobs:
 
       - name: Run Unit Tests
         run: pytest tests -m 'not integration_test'
+
+      - name: Run Integration Tests
+        run: pytest tests -m 'integration_test'
+        env:
+          AF_KLM_API_KEY: ${{ secrets.AF_KLM_API_KEY }}
+          AF_KLM_API_SECRET: ${{ secrets.AF_KLM_API_SECRET }}
+          LOG_LEVEL: INFO
